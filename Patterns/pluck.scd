@@ -1,21 +1,52 @@
-SynthDescLib.global.read;
+(
+SynthDef(\pluck, {
+	arg
+	amp = 0.1,
+	freq = 440,
+	mutedString = 0.1,
+	decay = 5;
+
+	var env, snd;
+	env = Env.linen(0, decay, 0).kr(2);
+	snd = Pluck.ar(
+		in: WhiteNoise.ar(amp),
+		trig: Impulse.kr(0),
+		maxdelaytime: 0.1,
+		delaytime: freq.reciprocal,
+		decaytime: decay,
+		coef: mutedString);
+	Out.ar(0, [snd, snd]);
+}).add;
+);
+
+~dur = 0.75;
+~decay = 1.75;
+~muteAmount = 0.1;
+~octave = -2;
+~amp = 0.05;
 
 (
-~dur = 0.25;
-~decay = 2.5;
-~muteAmount = 0.5;
-~octave = -2;
-
-~onOSCReceive = { |msg, time, addr|
-	switch (msg[0],
-		'/1/fader1', { ~dur = msg[1] },
-		'/1/fader2', { ~decay = msg[1] * 5 },
-		'/1/fader3', { ~muteAmount = msg[1] },
-	)
+~onOSCReceive = { |msg|
+	case
+	{ msg[0].asString.contains("/dur") } {
+		~dur = msg[1];
+	}
+	{ msg[0].asString.contains("/decay") } {
+		~decay = msg[1] * 5;
+	}
+	{ msg[0].asString.contains("/muteAmount") } {
+		~muteAmount = msg[1];
+	}
+	{ msg[0].asString.contains("/octave") } {
+		if (msg[1] == 1.0, {
+			~octave = msg[0].asString.at(msg[0].asString.size - 1).digit - 3;
+		})
+	};
 };
 );
 
 thisProcess.addOSCRecvFunc(~onOSCReceive);
+// thisProcess.removeOSCRecvFunc(~onOSCReceive);
 
 thisThread.randSeed = 4;
 
@@ -27,8 +58,9 @@ p = Pbind(*[
 	ctranspose: Pfunc { ~octave * 12 },
 	dur: Pfunc { ~dur },
 	decay: Pfunc { ~decay },
-	mutedString: Pfunc { ~muteAmount }
-]).play(TempoClock(80 / 60));
+	mutedString: Pfunc { ~muteAmount },
+	amp: Pfunc { ~amp }
+]).play(TempoClock(110 / 60), quant: 1);
 );
 
 // p.stop();

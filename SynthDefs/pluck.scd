@@ -16,5 +16,5 @@ SynthDef(\pluck, {
 		decaytime: decay,
 		coef: mutedString);
 	Out.ar(0, [snd, snd]);
-}).writeDefFile("/Users/nandi/Projects/SuperCollider/SynthDefs/");
+}).add;
 );
