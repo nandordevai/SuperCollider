@@ -1,4 +1,4 @@
-SynthDescLib.global.read;
+"../SynthDefs/tama.scd".loadRelative;
 
 ~tension = 0.01;
 ~loss = 1.99;
