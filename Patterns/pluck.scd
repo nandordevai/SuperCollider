@@ -1,9 +1,10 @@
 "../SynthDefs/pluck.scd".loadRelative;
+"../MIDI/initIAC.scd".loadRelative;
 
 ~dur = 0.5;
-~decay = 1.75;
+~decay = 4.23;
 ~decayMult = 5;
-~muteAmount = 0.1;
+~muteAmount = 0.7;
 ~octave = -2;
 ~amp = 0.05;
 
@@ -57,6 +58,7 @@ thisThread.randSeed = 4;
 ]);
 );
 
-~pluckPlayer = ~pluck.play(TempoClock(110 / 60), quant: 1);
+// ~pluckPlayer = ~pluck.play(TempoClock(110 / 60), quant: 1);
+~pluckPlayer = ~pluck.play(MIDISyncClock, quant: 1);
 
 // ~pluckPlayer.stop();
