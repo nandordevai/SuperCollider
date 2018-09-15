@@ -2,22 +2,29 @@
 
 ~dur = 0.5;
 ~decay = 1.75;
+~decayMult = 5;
 ~muteAmount = 0.1;
 ~octave = -2;
 ~amp = 0.05;
 
 ~tOSC = NetAddr("10.0.1.46", 9000);
 ~tOSC.sendMsg("/pluck/octave/1/" ++ (~octave + 3), 1);
+~tOSC.sendMsg("/pluck/durVal", ~dur);
+~tOSC.sendMsg("/pluck/dur", ~dur.linlin(0.25, 2, 0, 1));
+~tOSC.sendMsg("/pluck/decayVal", ~decay);
+~tOSC.sendMsg("/pluck/decay", ~decay / ~decayMult);
+~tOSC.sendMsg("/pluck/muteVal", ~muteAmount);
+~tOSC.sendMsg("/pluck/mute", ~muteAmount);
 
 (
 ~onOSCReceive = { |msg|
 	case
 	{ msg[0].asString.contains("/dur") } {
-		~dur = msg[1].round(0.25);
+		~dur = msg[1].linlin(0, 1, 0.25, 2).round(0.25);
 		~tOSC.sendMsg("/pluck/durVal", ~dur);
 	}
 	{ msg[0].asString.contains("/decay") } {
-		~decay = msg[1] * 5;
+		~decay = msg[1] * ~decayMult;
 		~tOSC.sendMsg("/pluck/decayVal", ~decay.round(0.01));
 	}
 	{ msg[0].asString.contains("/muteAmount") } {
