@@ -2,17 +2,19 @@
 
 ~tension = 0.01;
 ~loss = 1.99;
-~vel = 1;
+~vel = 2;
 
 (
-p = Pbind(*[
+~tama = Pbind(*[
 	instrument: 'tama',
 	note: Pseq([60, 80, 75, 80], inf),
-	dur: Pseq([1, 0.5, 0.5], inf),
+	dur: Pseq([1], inf), //, 0.5, 0.5], inf),
 	tension: Pfunc { ~tension },
 	loss: Pfunc { ~loss },
 	vel: Pfunc { ~vel },
-]).play(TempoClock(110 / 60));
+]);
 );
 
-// p.stop();
+~tamaPlayer= ~tama.play(TempoClock(110 / 60));
+
+// ~tamaPlayer.stop;
