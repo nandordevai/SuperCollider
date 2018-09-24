@@ -4,7 +4,8 @@ SynthDef(\pluck, {
 	amp = 0.1,
 	freq = 440,
 	mutedString = 0.1,
-	decay = 5;
+	decay = 5,
+	out_bus = 0;
 
 	var env, snd;
 	env = Env.linen(0, decay, 0).kr(2);
@@ -15,6 +16,7 @@ SynthDef(\pluck, {
 		delaytime: freq.reciprocal,
 		decaytime: decay,
 		coef: mutedString);
-	Out.ar(0, [snd, snd]);
-}).add;
+	Out.ar(out_bus, [snd, snd]);
+}).writeDefFile("/Users/nandi/Projects/SuperCollider/SynthDefs/").load(s);
 );
+

@@ -24,5 +24,5 @@ SynthDef(\tama, {
 	signal = signal * EnvGen.ar(Env.perc, gate, vel * 0.5, 0, dur, 2);
 	signal = Pan2.ar(signal, pan);
 	Out.ar(out_bus, signal);
-}).writeDefFile("/Users/nandi/Projects/SuperCollider/SynthDefs/");
+}).writeDefFile("/Users/nandi/Projects/SuperCollider/SynthDefs/").load(s);
 );
