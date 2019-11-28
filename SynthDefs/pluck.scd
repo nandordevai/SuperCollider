@@ -16,7 +16,11 @@ SynthDef(\pluck, {
 		delaytime: freq.reciprocal,
 		decaytime: decay,
 		coef: mutedString);
-	Out.ar(out_bus, [snd, snd]);
+	Out.ar(2, [snd, snd]);
 }).writeDefFile("/Users/nandi/Projects/SuperCollider/SynthDefs/").load(s);
 );
 
+ServerOptions.devices
+Server.default.options.device
+Server.default.options.outDevice_("BlackHole")
+Server.default.options.outDevice_("Onyx Blackjack")
