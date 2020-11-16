@@ -8,26 +8,25 @@ var maxDeg = 18;
 var weights = Array.fill(maxDeg + 1, 1) ++ 5;
 ~bellsMelody.source = Pbind(
     \degree, Pseq(
-        Array.fill(
-            // 4,
-            16,
+        [0] ++ Array.fill(
+            15,
             Pseed(
                 6134,
-                // Pwrand(
-                //     (0..maxDeg) ++ [\rest],
-                //     weights.normalizeSum,
-                //     inf
-                // )
                 Pmeanrand(0, maxDeg).round
-                // Pbrown(0, maxDeg, 1)
-                // Phprand(0, maxDeg, 1, inf)
             ).iter,
             inf
         ),
         inf
     ),
-    \root, 0,
+    \root, -7,
     \octave, 5,
+    \amp, Pseq(
+        Array.fill(
+            16,
+            Pexprand(0.5, 1.0, inf).iter
+        ),
+        inf
+    ),
 );
 )
 
@@ -40,8 +39,8 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
             Pseed(
                 165,
                 Pwrand(
-                    [0.4, 0.8, 1.2],
-                    [4, 2, 1].normalizeSum,
+                    [1/4, 6/4],
+                    [4, 1].normalizeSum,
                     inf
                 ),
             ).iter,
@@ -49,7 +48,7 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
         ),
         inf
     )
-));
+);
 )
 
 (
@@ -57,8 +56,7 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
     ~pdefs,
     Pbind(
         \scale, ~scale,
-        \midiout, ~iac,
-        \amp, Pexprand(0.5, 1.0, inf),
+        \midiout, ~iac1,
     ),
     ~bellsRhythm,
     ~bellsMelody

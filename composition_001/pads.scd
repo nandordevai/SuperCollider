@@ -1,10 +1,10 @@
 (
-var root = [0, 7, 9, 11];
 ~pm = EventPatternProxy();
 ~pr = EventPatternProxy();
 )
 
 (
+var root = [0, 7, 9, 11];
 ~pm.source = Pbind(
     \degree, Pxrand(
         [root, root+4, root+3],

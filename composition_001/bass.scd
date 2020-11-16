@@ -3,6 +3,7 @@
 ~br = EventPatternProxy();
 )
 
+// slow
 (
 ~bm.source = Pbind(
     \degree, Pseq(
@@ -21,10 +22,28 @@
 );
 )
 
+// fast
+(
+~bm.source = Pbind(
+    \degree, Place([0, [1, 7], [5, 3, 7]], inf),
+    \octave, 4,
+    \root, -7,
+);
+)
+
+// slow
 (
 ~br.source = Pbind(
     \dur, 4,
     \legato, 1,
+);
+)
+
+// fast
+(
+~br.source = Pbind(
+    \dur, 0.25, //4, 0.25,
+    \legato, 0.5, //1,
 );
 )
 
