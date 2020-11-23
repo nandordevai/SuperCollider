@@ -6,16 +6,35 @@
 (
 var maxDeg = 18;
 var weights = Array.fill(maxDeg + 1, 1) ++ 5;
-~bellsMelody.source = Pbind(
-    \degree, Pseq(
-        [0] ++ Array.fill(
-            15,
-            Pseed(
-                6134,
-                Pmeanrand(0, maxDeg).round
-            ).iter,
+~bellsNotes = Array.fill(
+    15,
+    Pseed(
+        6134,
+        Pmeanrand(0, maxDeg).round
+    ).iter,
+    inf
+);
+)
+
+(
+~bellsLengths = Array.fill(
+    16,
+    Pseed(
+        165,
+        Pwrand(
+            [1/4, 6/4],
+            [4, 1].normalizeSum,
             inf
         ),
+    ).iter,
+    inf
+);
+)
+
+(
+~bellsMelody.source = Pbind(
+    \degree, Pseq(
+        [0] ++ ~bellsNotes,
         inf
     ),
     \root, -7,
@@ -28,27 +47,19 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
         inf
     ),
 );
-)
-
-(
 ~bellsRhythm.source = Pbind(
     \dur, 1,
     \legato, Pseq(
-        Array.fill(
-            16,
-            Pseed(
-                165,
-                Pwrand(
-                    [1/4, 6/4],
-                    [4, 1].normalizeSum,
-                    inf
-                ),
-            ).iter,
-            inf
-        ),
+        ~bellsLengths,
         inf
     )
 );
+)
+
+(
+~i = rrand(1, 14).asInteger;
+~bellsNotes[~i] = Pmeanrand(0, 18).round.asStream.next;
+~bellsLengths[~i + 1] = Pwrand([1/4, 6/4], [4, 1].normalizeSum).asStream.next;
 )
 
 (
