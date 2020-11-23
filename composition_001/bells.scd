@@ -32,35 +32,47 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
 )
 
 (
-~bellsMelody.source = Pbind(
-    \degree, Pseq(
-        [0] ++ ~bellsNotes,
-        inf
-    ),
-    \root, -7,
-    \octave, 5,
-    \amp, Pseq(
-        Array.fill(
-            16,
-            Pexprand(0.5, 1.0, inf).iter
+~setSource = {
+    ~bellsMelody.source = Pbind(
+        \degree, Pseq(
+            [0] ++ ~bellsNotes,
+            inf
         ),
-        inf
-    ),
-);
-~bellsRhythm.source = Pbind(
-    \dur, 1,
-    \legato, Pseq(
-        ~bellsLengths,
-        inf
-    )
-);
+        \root, -7,
+        \octave, 5,
+        \amp, Pseq(
+            Array.fill(
+                16,
+                Pexprand(0.5, 1.0, inf).iter
+            ),
+            inf
+        ),
+    );
+    ~bellsRhythm.source = Pbind(
+        \dur, 1,
+        \legato, Pseq(
+            ~bellsLengths,
+            inf
+        )
+    );
+};
 )
 
+~setSource.value;
+
 (
-~i = rrand(1, 14).asInteger;
-~bellsNotes[~i] = Pmeanrand(0, 18).round.asStream.next;
-~bellsLengths[~i + 1] = Pwrand([1/4, 6/4], [4, 1].normalizeSum).asStream.next;
+~change = Routine({
+    inf.do {
+        ~i = rrand(1, 14).asInteger;
+        ~bellsNotes[~i] = Pmeanrand(0, 18).round.asStream.next;
+        ~bellsLengths[~i + 1] = Pwrand([1/4, 6/4], [4, 1].normalizeSum).asStream.next;
+        ~setSource.value;
+        16.wait;
+    }
+});
+~change.play;
 )
+~change.stop;
 
 (
 ~bells = Pchain(
