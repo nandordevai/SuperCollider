@@ -1,13 +1,14 @@
 (
 ~bellsMelody = EventPatternProxy();
 ~bellsRhythm = EventPatternProxy();
+~patternLength = 16;
 )
 
 (
 var maxDeg = 18;
 var weights = Array.fill(maxDeg + 1, 1) ++ 5;
 ~bellsNotes = Array.fill(
-    15,
+    ~patternLength - 1,
     Pseed(
         6134,
         Pmeanrand(0, maxDeg).round
@@ -18,7 +19,7 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
 
 (
 ~bellsLengths = Array.fill(
-    16,
+    ~patternLength,
     Pseed(
         165,
         Pwrand(
@@ -42,7 +43,7 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
         \octave, 5,
         \amp, Pseq(
             Array.fill(
-                16,
+                ~patternLength,
                 Pexprand(0.5, 1.0, inf).iter
             ),
             inf
@@ -65,12 +66,13 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
     inf.do {
         ~i = rrand(1, 14).asInteger;
         ~bellsNotes[~i] = Pmeanrand(0, 18).round.asStream.next;
-        ~bellsLengths[~i + 1] = Pwrand([1/4, 6/4], [4, 1].normalizeSum).asStream.next;
+        ~bellsLengths[~i] = Pwrand([1/4, 6/4], [4, 1].normalizeSum).asStream.next;
         ~setSource.value;
-        16.wait;
-    }
+        ~bellsNotes.postln;
+        ~patternLength.wait;
+    };
 });
-~change.play;
+~change.play(~link, quant:4);
 )
 ~change.stop;
 
