@@ -2,6 +2,9 @@
 ~bellsMelody = EventPatternProxy();
 ~bellsRhythm = EventPatternProxy();
 ~patternLength = 16;
+~octave = 6;
+~lc = LCXLKontrol.new;
+~changeIsPlaying = false;
 )
 
 (
@@ -32,6 +35,28 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
 );
 )
 
+
+(
+~lc.fader1.onChange = {|val|
+    ~octave = val.linlin(0, 127, 4, 7).round;
+    ~octave.postln;
+};
+)
+
+(
+~lc.control1.onPress = {
+    if (~changeIsPlaying, {
+        "stopping change".postln;
+        ~changeIsPlaying = false;
+        ~change.pause;
+    }, {
+        "starting change".postln;
+        ~changeIsPlaying = true;
+        ~change.play(~link, quant: 4);
+    })
+};
+)
+
 (
 ~setSource = {
     ~bellsMelody.source = Pbind(
@@ -40,7 +65,7 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
             inf
         ),
         \root, -7,
-        \octave, 5,
+        \octave, Pfunc { ~octave },
         \amp, Pseq(
             Array.fill(
                 ~patternLength,
@@ -62,7 +87,7 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
 ~setSource.value;
 
 (
-~change = Routine({
+~change = Task({
     inf.do {
         ~i = rrand(1, 14).asInteger;
         ~bellsNotes[~i] = Pmeanrand(0, 18).round.asStream.next;
@@ -72,9 +97,17 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
         ~patternLength.wait;
     };
 });
+)
+
+(
+~changeIsRunning = true;
 ~change.play(~link, quant:4);
 )
+
+(
+~changeIsRunning = false;
 ~change.stop;
+)
 
 (
 ~bells = Pchain(
