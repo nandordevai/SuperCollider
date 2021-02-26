@@ -1,2 +1,4 @@
 *.scsyndef
 tmp/
+.DS_Store
+Eli Fieldsteel wavetable synth.scd

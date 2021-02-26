@@ -10,4 +10,4 @@
 - `ableton-link-poc.scd`: Ableton Link proof of concept implementation
 - `random-seq.scd`: first try at random/generative sequencing, see `composition_001` files for a more advanced approach
 
-Also see [LCXLKontrol](https://github.com/nandordevai/LCXLKontrol) for my implementation for Novation LaunchControl XL MIDI mapping.
+Also see [LCXLKontrol](https://github.com/nandordevai/LCXLKontrol) for my implementation of Novation LaunchControl XL MIDI mapping.
