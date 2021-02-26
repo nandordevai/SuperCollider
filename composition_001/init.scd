@@ -1,14 +1,13 @@
 (
 var l = 0.165;
 MIDIClient.init;
-~iac1 = MIDIOut.newByName("IAC Driver", "Bus 1");
-~iac1.latency = l;
-~iac2 = MIDIOut.newByName("IAC Driver", "Bus 2");
-~iac2.latency = l;
-~iac3 = MIDIOut.newByName("IAC Driver", "Bus 3");
-~iac3.latency = l;
-~iac4 = MIDIOut.newByName("IAC Driver", "Bus 4");
-~iac4.latency = l;
+~iac = List[];
+4.do({|i|
+    var bus = MIDIOut.newByName("IAC Driver", "Bus " ++ (i + 1));
+    bus.latency = l;
+    ~iac.add(bus)
+});
+
 ~link = LinkClock(1).latency_(Server.default.latency);
 ~link.tempo = 75 / 60;
 
