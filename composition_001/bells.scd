@@ -5,22 +5,17 @@
 ~octave = 6;
 ~lc = LCXLKontrol.new;
 ~changeIsPlaying = false;
-)
+~maxDeg = 18;
 
-(
-var maxDeg = 18;
-var weights = Array.fill(maxDeg + 1, 1) ++ 5;
 ~bellsNotes = Array.fill(
     ~patternLength - 1,
     Pseed(
         6134,
-        Pmeanrand(0, maxDeg).round
+        Pmeanrand(0, ~maxDeg).round
     ).iter,
     inf
 );
-)
 
-(
 ~bellsLengths = Array.fill(
     ~patternLength,
     Pseed(
@@ -33,38 +28,14 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
     ).iter,
     inf
 );
-)
 
-
-(
-~lc.fader1.onChange = {|val|
-    ~octave = val.linlin(0, 127, 4, 7).round;
-    ~octave.postln;
-};
-)
-
-(
-~lc.control1.onPress = {
-    if (~changeIsPlaying, {
-        "stopping change".postln;
-        ~changeIsPlaying = false;
-        ~change.pause;
-    }, {
-        "starting change".postln;
-        ~changeIsPlaying = true;
-        ~change.play(~link, quant: 4);
-    })
-};
-)
-
-(
 ~setSource = {
     ~bellsMelody.source = Pbind(
         \degree, Pseq(
             [0] ++ ~bellsNotes,
             inf
         ),
-        \root, -7,
+        \root, 0, //-7,
         \octave, Pfunc { ~octave },
         \amp, Pseq(
             Array.fill(
@@ -82,11 +53,9 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
         )
     );
 };
-)
 
 ~setSource.value;
 
-(
 ~change = Task({
     inf.do {
         ~i = rrand(1, 14).asInteger;
@@ -97,6 +66,29 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
         ~patternLength.wait;
     };
 });
+
+~bells = Pchain(
+    ~pdefs,
+    Pbind(
+        \scale, ~scale,
+        \midiout, ~iac[0],
+    ),
+    ~bellsRhythm,
+    ~bellsMelody
+); //.play(~link, quant:4);
+)
+
+(
+MIDIdef.noteOn("play1", { |val, num|
+    val.postln;
+    num.postln;
+    "start clip".postln;
+    ~bells.play(~link, quant: 4);
+}, 81, 0);
+)
+
+(
+~bells.play(~link, quant:4);
 )
 
 (
@@ -109,15 +101,38 @@ var weights = Array.fill(maxDeg + 1, 1) ++ 5;
 ~change.stop;
 )
 
-(
-~bells = Pchain(
-    ~pdefs,
-    Pbind(
-        \scale, ~scale,
-        \midiout, ~iac1,
-    ),
-    ~bellsRhythm,
-    ~bellsMelody
-).play(~link, quant:4);
-)
 ~bells.stop;
+
+(
+~lc.fader1.onChange = {|val|
+    ~octave = val.linlin(0, 127, 4, 7).round;
+    ~octave.postln;
+};
+)
+
+(
+~lc.fader2.mapTo("octave", 4, 7);
+)
+
+(
+~lc.focusButtons.do {
+    arg fader, i;
+    fader.onPress = {|val|
+        "Key #% pressed: %\n".postf(i + 1, val);
+    }
+};
+)
+
+(
+~lc.control1.onPress = {
+    if (~changeIsPlaying, {
+        "stopping change".postln;
+        ~changeIsPlaying = false;
+        ~change.pause;
+    }, {
+        "starting change".postln;
+        ~changeIsPlaying = true;
+        ~change.play(~link, quant: 4);
+    })
+};
+)
